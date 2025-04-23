@@ -1,49 +1,64 @@
 #include <cstdio>
+#include <stdexcept>
 
-const int MAX_SIZE = 10;
-
-void addMatrices(int a[MAX_SIZE][MAX_SIZE], int b[MAX_SIZE][MAX_SIZE], int result[MAX_SIZE][MAX_SIZE], int rows, int cols) {
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            result[i][j] = a[i][j] + b[i][j];
+template <typename T>
+void addMatrices(T** matrix1, T** matrix2, T** result, size_t rows, size_t cols) {
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            result[i][j] = matrix1[i][j] + matrix2[i][j];
         }
     }
 }
 
-void printMatrix(int matrix[MAX_SIZE][MAX_SIZE], int rows, int cols) {
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            printf("%d ", matrix[i][j]);
+template <typename T>
+void printMatrix(T** matrix, size_t rows, size_t cols) {
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            printf("%6.2f ", static_cast<double>(matrix[i][j])); 
         }
         printf("\n");
     }
 }
 
 int main() {
-    int a[MAX_SIZE][MAX_SIZE], b[MAX_SIZE][MAX_SIZE], result[MAX_SIZE][MAX_SIZE];
-    int rows, cols;
+    const size_t rows = 2;
+    const size_t cols = 2;
 
-    printf("Введите количество строк и столбцов матриц: ");
-    scanf("%d %d", &rows, &cols);
+    int** mat1 = new int*[rows];
+    int** mat2 = new int*[rows];
+    int** result = new int*[rows];
 
-    printf("Введите элементы первой матрицы:\n");
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            scanf("%d", &a[i][j]);
-        }
+    for (size_t i = 0; i < rows; ++i) {
+        mat1[i] = new int[cols];
+        mat2[i] = new int[cols];
+        result[i] = new int[cols];
     }
 
-    printf("Введите элементы второй матрицы:\n");
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            scanf("%d", &b[i][j]);
-        }
-    }
+    mat1[0][0] = 1; mat1[0][1] = 2;
+    mat1[1][0] = 3; mat1[1][1] = 4;
 
-    addMatrices(a, b, result, rows, cols);
+    mat2[0][0] = 5; mat2[0][1] = 6;
+    mat2[1][0] = 7; mat2[1][1] = 8;
 
-    printf("Результат сложения матриц:\n");
+    addMatrices(mat1, mat2, result, rows, cols);
+
+    printf("Матрица 1:\n");
+    printMatrix(mat1, rows, cols);
+
+    printf("\nМатрица 2:\n");
+    printMatrix(mat2, rows, cols);
+
+    printf("\nРезультат сложения:\n");
     printMatrix(result, rows, cols);
+
+    for (size_t i = 0; i < rows; ++i) {
+        delete[] mat1[i];
+        delete[] mat2[i];
+        delete[] result[i];
+    }
+    delete[] mat1;
+    delete[] mat2;
+    delete[] result;
 
     return 0;
 }
